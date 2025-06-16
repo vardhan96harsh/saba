@@ -1,0 +1,71 @@
+{
+  "channels": [
+    {
+      "id": 1,
+      "name": "Computing Episodes"
+    },
+    {
+      "id": 2,
+      "name": "Printing Episodes"
+    }
+  ],
+  "channel_subs": {},
+  "podcasts": [
+    {
+      "id": "25",
+      "title": "OMEN 15 Notebook Summer 2020",
+      "channel_id": 1,
+      "category": "main",
+      "length": "15:01:00",
+      "video_id": 6171142397001.0,
+      "publish_date": "2020-07-14T00:00:00.000",
+      "link": "https://link.brightcove.com/services/player/bcpid1190528646001?col_master_id=CIDd955fcd3-7598-441c-8db1-64cf1028ce91&bctid=ref:REFIDWDN5dd9d657-7e5a-4683-babd-5080c50a304c",
+      "music": "Equipment-SouthsideSlugger-CDBaby-TR0006476093.wav",
+      "rfid": null,
+      "notes": "Brandon and Jason",
+      "wise_link": null
+    },
+    {
+      "id": "26",
+      "title": "OMEN 25L and 30L Desktop PC Summer 2020",
+      "channel_id": 1,
+      "category": "main",
+      "length": "10:36:00",
+      "video_id": 6174224940001.0,
+      "publish_date": "2020-07-28T00:00:00.000",
+      "link": "https://link.brightcove.com/services/player/bcpid1190528646001?col_master_id=CIDd955fcd3-7598-441c-8db1-64cf1028ce91&bctid=ref:REFIDWDN000fea73-8330-4f2c-bd83-97946b4de70d",
+      "music": "Equipment-SouthsideSlugger-CDBaby-TR0006476093.wav",
+      "rfid": null,
+      "notes": "Brandon and Jason",
+      "wise_link": null
+    },
+    {
+      "id": "27",
+      "title": "HP ChromeBooks Back to School Tips",
+      "channel_id": 1,
+      "category": "main",
+      "length": "09:27:00",
+      "video_id": 6177901604001.0,
+      "publish_date": "2020-08-18T00:00:00.000",
+      "link": "https://link.brightcove.com/services/player/bcpid1190528646001?col_master_id=CIDd955fcd3-7598-441c-8db1-64cf1028ce91&bctid=ref:REFIDWDN000fea73-8330-4f2c-bd83-97946b4de70d",
+      "music": "Equipment-SouthsideSlugger-CDBaby-TR0006476093.wav",
+      "rfid": null,
+      "notes": "Brandon and Jason With Guest Emily Ryan",
+      "wise_link": null
+    },
+    {
+      "id": "28",
+      "title": "HP CrhromBooks Troubleshooting Top Issues",
+      "channel_id": 1,
+      "category": "main",
+      "length": "14:27:00",
+      "video_id": 6185273248001.0,
+      "publish_date": "2020-09-01T00:00:00.000",
+      "link": "https://link.brightcove.com/services/player/bcpid1190528646001?col_master_id=CIDd955fcd3-7598-441c-8db1-64cf1028ce91&bctid=ref:REFIDWDN0538c40f-dc1e-4d5b-8a58-5ede831f076c",
+      "music": "Equipment-SouthsideSlugger-CDBaby-TR0006476093.wav",
+      "rfid": null,
+      "notes": "Brandon and Jason With Guest Emily Ryan",
+      "wise_link": null
+    }
+  ]
+}
