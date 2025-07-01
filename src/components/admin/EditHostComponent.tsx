@@ -389,7 +389,7 @@ const Edit = ({ host,setHost, index, isEdit, handleCancel, validateEmail, setEma
             <div className='flex-1'>
         <label className="block text-gray-400 w-full text-sm">
   <span>
-    Host Photo (JPEG/PNG, minimum 300kb) <span className="text-red-500">*</span>
+    Host Photo (JPEG/PNG, minimum 200kb) <span className="text-red-500">*</span>
   </span>
   <input
     type="file"

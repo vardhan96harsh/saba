@@ -239,13 +239,14 @@ const HomeCur: React.FC = () => {
 
 
   return (
-    <div className="relative bg-[#000000] w-full h-[180px] md:h-[320px] overflow-hidden">
+    <div className="relative w-full h-[180px] md:h-[240px] lg:h-[290px] xl:h-[335px] 2xl:h-[425px]  overflow-hidden">
     <div
   key={currentBanner.id}
-  className="absolute w-full h-full transition-opacity duration-1000 ease-in-out xl:object-cover opacity-100 pointer-events-auto"
+  className="absolute w-full h-full transition-opacity duration-1000 ease-in-out  opacity-100 pointer-events-auto"
   style={{
     backgroundColor: bannerColors[currentIndex],
-    backgroundSize: "cover",
+    backgroundSize: "contain",
+backgroundRepeat: "no-repeat",
     backgroundPosition: "center center",
     backgroundImage:
       window.innerWidth > 768
@@ -275,16 +276,16 @@ const HomeCur: React.FC = () => {
   <div className="inset-0 flex flex-col items-start py-4 md:py-12 w-[80%] md:w-1/2">
     {currentBanner.title && (
       <>
-        <h1 className="items-center md:px-20 pl-8 text-[38px] text-black md:text-[77px] leading-[38px] md:leading-[66px]">
+        <h1 className="items-center md:px-20 pl-8 text-[38px] text-black md:text-[77px] 2xl:text-[100px] leading-[38px] md:leading-[66px] 2xl:leading-[40px]">
           {currentBanner.title}
         </h1>
-        <div className="mt-4 border-t-[2px] border-black w-full"></div>
+        <div className="mt-4 2xl:mt-16 border-t-[2px] border-black w-full"></div>
       </>
     )}
 
     {currentBanner.description && (
       <>
-        <p className="ml-0 2xl:ml-0 md:px-12 py-1 md:py-3 pl-8 md:pl-20 font-medium text-[15px] md:text-[35px] leading-tight md:leading-8">
+        <p className="ml-0 2xl:ml-0 md:px-12 py-1 md:py-3 pl-8 md:pl-20 font-medium text-[15px] md:text-[35px] lg:text-[40px] 2xl:text-[50px] leading-tight md:leading-8 lg:leading-9 2xl:leading-snug">
           {currentBanner.description}
         </p>
         <div className="border-t-[2px] border-black w-full"></div>

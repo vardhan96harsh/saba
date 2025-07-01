@@ -173,38 +173,7 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         });
     };
 
-    // const validateFields = () => {
-    //     const requiredFields = ['title', 'link', 'length', 'video_id', 'publish_date', 'channel', 'hosts', 'episode', 'description'];
-    //     // const allFieldsFilled = requiredFields.every(field => currentPodcast[field] && currentPodcast[field].toString().trim().length > 0);
-    //     const isLinkValid = isValidUrl(currentPodcast.link);
-    //     const isThumbnailValid = isValidUrl(currentPodcast.thumbnail);
-
-    //     if (!isLinkValid) {
-    //         setLinkError('Please enter a valid URL for the link.');
-    //         return false;
-    //     } else {
-    //         setLinkError('');
-    //     }
-
-    //     if (!isThumbnailValid) {
-    //         setThumbnailError('Please enter a valid URL for the thumbnail.');
-    //         return false;
-    //     } else {
-    //         setThumbnailError('');
-    //     }
-
-    //     if (!validateUniqueTitleAndEpisode(currentPodcast.channel, currentPodcast.title, currentPodcast.episode, isEdit, index)) {
-    //         alert('The title and episode number must be unique within the same channel.');
-    //         return false;
-    //     }
-
-    //     if (data.podcasts.some((p, i) => p.link === currentPodcast.link && (!isEdit || i !== index))) {
-    //         alert('The link must be unique.');
-    //         return false;
-    //     }
-
-    //     return true;
-    // };
+    
 
     const validateFields = () => {
         const requiredFields = ['title', 'link', 'length', 'video_id', 'publish_date', 'channel', 'hosts', 'episode', 'description'];
@@ -226,11 +195,8 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         }
     
         // Ensure unique title and episode number within the same channel
-        const isDuplicateEpisode = data.podcasts.some((p, i) =>
-            p.channel === currentPodcast.channel &&
-            (p.title === currentPodcast.title || p.episode === currentPodcast.episode) &&
-            (!isEdit || i !== index) // Exclude current podcast if editing
-        );
+        const isDuplicateEpisode = !validateUniqueTitleAndEpisode(currentPodcast.channel, currentPodcast.title, currentPodcast.episode, isEdit, index);
+
     
         if (isDuplicateEpisode) {
             alert('The title and episode number must be unique within the same channel.');
@@ -238,16 +204,7 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         }
     
         // Ensure the same link is not repeated within the same channel
-        const isDuplicateLinkInSameChannel = data.podcasts.some((p, i) =>
-            p.channel === currentPodcast.channel &&
-            p.link === currentPodcast.link &&
-            (!isEdit || i !== index) // Exclude current podcast if editing
-        );
-    
-        if (isDuplicateLinkInSameChannel) {
-            alert('The link must be unique within the same channel.');
-            return false;
-        }
+      
     
         return true;
     };
@@ -257,6 +214,7 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         if (!validateFields()) {
             return;
         }
+        
 
         const canFetchData = await fetchDataFromUrl(currentPodcast.link);
         if (!canFetchData) {

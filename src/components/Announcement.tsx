@@ -52,41 +52,7 @@ const Announcement: React.FC = () => {
 
   
  
-  // const handleSave = async () => {
-  //   setIsLoading(true); // Start loading
-  //   setIsSaved(false);
-  //   setIsError(false);
-  //   let imageBase64 = backgroundImage;
-  
-  //   if (newBackgroundImage) {
-  //     imageBase64 = (await convertToBase64(newBackgroundImage)) as string;
-  //   }
-  
-  //   const announcementData = {
-  //     title,
-  //     description,
-  //     ctaText,
-  //     backgroundImage: imageBase64,
-  //   };
-  
-  //   try {
-  //     // Update commonData before making the API call
-  //     const updatedCommonData = { ...commonData, announcementData };
-  //     setCommonData(updatedCommonData);
-  //     setAnnouncementData(announcementData); // Update announcement state immediately
-  
-  //     await importCommonData(updatedCommonData); // Save to server
-  
-  //     setIsSaved(true);
-  //     setIsEditing(false);
-  //     console.log("Announcement data saved successfully.");
-  //   } catch (error) {
-  //     console.error("Error saving announcement data:", error);
-  //     setIsError(true);
-  //   } finally {
-  //     setIsLoading(false); // Stop loading after saving
-  //   }
-  // };
+
   
   const handleSave = async () => {
     setIsLoading(true);
@@ -149,9 +115,11 @@ const Announcement: React.FC = () => {
   return (
     <>
       <div
-        className="relative justify-between bg-cover bg-center rounded-sm w-full h-[110px]"
+        className="relative justify-between   w-full h-[110px] lg:h-[135px] xl:h-[130px] 2xl:h-[250px] "
         style={{
           backgroundImage: `url(${backgroundImage || DEFAULT_BACKGROUND_IMAGE})`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
         }}
       >
         <div className="inset-0 flex md:flex-row justify-between items-start bg-opacity-50 p-2 tracking-wider">
@@ -181,7 +149,7 @@ const Announcement: React.FC = () => {
           </div>
           
         )}
-          <p className="  w-full  text-center mt-10 sm:mt-6 md:mt-6 xl:mt-6 lg:mt-6 text-white md:text-3xl tracking-wide">
+          <p className="  w-full  text-center mt-10 sm:mt-6 md:mt-6 xl:mt-12 lg:mt-12 text-white md:text-3xl tracking-wide">
             {ctaText}
           </p>
       </div>

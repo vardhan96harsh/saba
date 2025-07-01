@@ -22,7 +22,7 @@ const LatestPod = ({ podcasts }) => {
     const handleThumbnailOrTitleClick = (podcast) => {
         const channelId = podcast.channel_id;
         const isSubscribed = subData[channelId]?.includes(userId);
-        console.log(podcast.channel.toLowerCase().includes('computing'), "nikhil checking");
+        // console.log(podcast.channel.toLowerCase().includes('computing'), "nikhil checking");
 
         if (isSubscribed) {
             // Navigate to the channel page if subscribed and pass the selected podcast

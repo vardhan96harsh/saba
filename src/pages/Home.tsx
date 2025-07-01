@@ -147,41 +147,10 @@ const Home = () => {
   };
   
 
-  // Redirect to ChannelPage if URL has video data
-  // useEffect(() => {
-  //   console.log("Raw location.search:", window.location.href);
-  //   console.log("Raw location.search:", window.location.search);
-  //   const queryData = getQueryParams();
-  //   console.log("Checking query params:", queryData);
-  
-  //   if (queryData.videoId && queryData.channelId) {
-  //     console.log("Redirecting to ChannelPage with video data...", queryData);
-  //     navigate('/channel', {
-  //       state: {
-  //         id: queryData.channelId,
-  //         selectedVideoi: {
-  //           id: queryData.videoId,
-  //           title: queryData.title,
-  //           channel_id: queryData.channelId,
-  //           channel: queryData.channelName,
-  //           wise_link: queryData.videoUrl,
-  //           publish_date: queryData.publishDate,
-  //         },
-  //         openTab: queryData.channelName,
-  //       }
-  //     });
-  //   } else {
-  //     console.log("No valid video data in the URL.");
-  //   }
-  // }, []);
-  
-
-
-
 
   return (
     <main>
-      <div className="w-100 h-screen antialiased font-sans bg-[#E6E6E6] overflow-hidden overflow-y-auto">
+      <div className="w-100 h-screen antialiased font-sans  overflow-hidden overflow-y-auto">
         <div className=" w-100 mx-auto">
           {/* <HeaderHP /> */}
           <HomeHeader />
