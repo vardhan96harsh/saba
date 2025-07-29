@@ -92,6 +92,10 @@ const TagsInput = ({ tags, onChange, disabled }) => {
         onChange(newTags);
     };
 
+      const handleRemoveAllTags = () => {
+        onChange([]);
+    };
+
     return (
         <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-700">
@@ -113,6 +117,17 @@ const TagsInput = ({ tags, onChange, disabled }) => {
                     placeholder="Add a tag and press Enter..."
                     disabled={disabled}
                 />
+                {tags.length > 0 && (
+    <button
+        type="button"
+        onClick={handleRemoveAllTags}
+        className="text-xs text-red-600 ml-2  hover:text-red-800"
+        disabled={disabled}
+    >
+        ❌ Remove All Tags
+    </button>
+)}
+
             </div>
         </div>
     );
@@ -604,13 +619,23 @@ const EditPodcastComponent = () => {
 
     const tableRef = useRef(null);
 
-    const handleEdit = (index) => {
-        scrollPositionRef.current = tableRef.current?.scrollTop || 0;
-        setPodcast(filteredPodcasts[index]);
-        setIsEdit(true);
-        setToggle(true);
-        setIndex(index);
-    };
+    // const handleEdit = (index) => {
+    //     scrollPositionRef.current = tableRef.current?.scrollTop || 0;
+    //     setPodcast(filteredPodcasts[index]);
+    //     setIsEdit(true);
+    //     setToggle(true);
+    //     setIndex(index);
+    // };
+    const handleEdit = (filteredIndex) => {
+    const podcastToEdit = filteredPodcasts[filteredIndex];
+    const globalIndex = data.podcasts.findIndex(p => p.id === podcastToEdit.id);
+    scrollPositionRef.current = tableRef.current?.scrollTop || 0;
+    setPodcast(podcastToEdit);
+    setIsEdit(true);
+    setToggle(true);
+    setIndex(globalIndex); // ✅ this is the key change
+};
+
 
     const handleAddNew = () => {
         setPodcast({});

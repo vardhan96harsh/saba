@@ -230,7 +230,7 @@ const Home = () => {
           </div>
         </section>
         <Announcement />
-        <div className='py-8 bg-[#2bace3]'> </div>
+        {/* <div className='py-2 bg-[#2bace3]'> </div> */}
       </div>
     </main>
   );

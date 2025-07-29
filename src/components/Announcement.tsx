@@ -115,19 +115,23 @@ const Announcement: React.FC = () => {
   return (
     <>
       <div
-        className="relative justify-between   w-full h-[110px] lg:h-[135px] xl:h-[130px] 2xl:h-[250px] "
-        style={{
-          backgroundImage: `url(${backgroundImage || DEFAULT_BACKGROUND_IMAGE})`,
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-        }}
+        className="relative justify-between   w-full  "
+     
       >
-        <div className="inset-0 flex md:flex-row justify-between items-start bg-opacity-50 p-2 tracking-wider">
+        <div className="inset-0 flex md:flex-row justify-between items-start   tracking-wider h-[140px] "
+           style={{
+          backgroundImage: `url(${backgroundImage || DEFAULT_BACKGROUND_IMAGE})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '100%',
+        }}>
           <div className="flex flex-col px-2 w-1/2 text-left">
             <h1 className=" pt-3 md:pt-3 pl-0 md:pl-16 w-full md:w-full  text-black text-lg md:text-2xl lg:text-3xl leading-none ">
               {title}
             </h1>
-            <p className="pt-1 md:pt-1 lg:pt-0 xl:pt-4  pr-0 pl-0 md:pl-16 w-full md:w-full text-black text-left text-xs md:text-lg lg:text-lg leading-none md:leading-4">
+            <p className="pt-1 md:pt-1 lg:pt-0 xl:pt-3  pr-0 pl-0 md:pl-16 w-full md:w-full text-black text-left text-xs md:text-lg lg:text-lg leading-none md:leading-4">
               {description}
             </p>
            
@@ -149,7 +153,7 @@ const Announcement: React.FC = () => {
           </div>
           
         )}
-          <p className="  w-full  text-center mt-10 sm:mt-6 md:mt-6 xl:mt-12 lg:mt-12 text-white md:text-3xl tracking-wide">
+          <p className="  w-full  text-center bg-[#2bace3] py-3 text-white md:text-3xl tracking-wide">
             {ctaText}
           </p>
       </div>

@@ -723,7 +723,7 @@ function ChannelPage() {
     const currentSubcategory = selectedSubcategory || subcategoryList[0];
 
     return (
-      <div className='flex h-[225px] py-0 md:h-[240px] xl:h-[273px] 2xl:h-[306px]'>
+      <div className='flex h-[225px] py-2 md:h-[240px] xl:h-[288px] 2xl:h-[306px]'>
         {selectedSubcategory && (
           <div
             className='ml-2 mt-0 hidden h-[190px] w-[320px] flex-col md:absolute md:ml-8 md:block md:w-[240px] xl:mt-5 xl:w-[300px] 2xl:ml-10 2xl:mt-4 2xl:h-[220px] 2xl:w-[350px]'
@@ -735,10 +735,16 @@ function ChannelPage() {
                 alt={currentSubcategory}
                 className='h-[140px] w-full md:h-[145px] xl:h-[180px] 2xl:h-[210px]'
               />
+            <div className="text-center text-lg text-white md:mt-3">
+  {currentSubcategory} ({subcategories[currentSubcategory].videos.length}{" "}
+  {subcategories[currentSubcategory].videos.length === 1 ? "Episode" : "Episodes"})
+</div>
+
             </div>
-            <div className='text-center text-lg text-white md:mt-3'>
+            
+            {/* <div className='text-center text-lg text-white md:mt-3'>
               {currentSubcategory}
-            </div>
+            </div> */}
           </div>
         )}
 
@@ -748,6 +754,7 @@ function ChannelPage() {
               ? 'md:w-[1150px] xl:w-[1380px] 2xl:w-[1750px]'
               : 'w-[340px] md:w-[1150px] xl:w-[1380px] 2xl:w-[1750px]'
           }`}
+          
         >
           {selectedSubcategory ? (
             // Show all videos under the selected subcategory
@@ -763,6 +770,7 @@ function ChannelPage() {
                   className='mb-[-15px] w-[35px] xl:mb-[-20px] xl:w-[40px] 2xl:mb-[-15px] 2xl:w-[50px]'
                 />
               </button>
+              
               <Slider
                 className='mt-[-25px] w-[260px] md:mt-0 md:w-full xl:w-[950px] 2xl:w-[1180px]'
                 {...{
@@ -804,9 +812,11 @@ function ChannelPage() {
                       isSelected={subcategory === selectedSubcategory}
                       hideEpisodeText={true}
                     />
-                    <div className='mt-[-40px] text-center text-white'>
-                      {subcategory}
-                    </div>
+                <div className="mt-[-40px] text-center text-white">
+  {subcategory} ({subcategoryData.videos.length}{" "}
+  {subcategoryData.videos.length === 1 ? "Episode" : "Episodes"})
+</div>
+
                   </div>
                 )
               )}
