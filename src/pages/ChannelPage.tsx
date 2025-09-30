@@ -54,6 +54,17 @@ const calculateAverageRating = (ratings) => {
   return numberOfRatings > 0 ? totalRatings / numberOfRatings : 0;
 };
 
+const WORD_LIMIT = 50;
+
+const getPlainText = (html = '') => {
+  const el = document.createElement('div');
+  el.innerHTML = html;
+  return el.textContent || el.innerText || '';
+};
+
+const getWordCount = (text = '') =>
+  text.trim().split(/\s+/).filter(Boolean).length;
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -82,7 +93,7 @@ const CarouselItem = ({
     <img
       src={video.thumbnail || bgImg}
       alt={video.title}
-      className=' h-[150px] w-full md:h-[150px] xl:h-[180px] 2xl:h-[210px]  '
+      className=' h-[150px] w-full md:h-[150px] xl:h-[180px] 2xl:h-[250px]  '
     />
     <div
       className={`absolute bottom-0 left-0 mt-2 flex min-h-[3rem] w-full items-center justify-center text-center text-black ${
@@ -158,6 +169,10 @@ function ChannelPage() {
 
   const [showFullTags, setShowFullTags] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+
+const descRef = useRef(null);
+const [isOverflowing, setIsOverflowing] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPodcasts, setFilteredPodcasts] = useState(podcasts);
 
@@ -440,16 +455,15 @@ function ChannelPage() {
   };
 
   useEffect(() => {
-  // Check if the selectedTab corresponds to the playlist tab
-  if (selectedTab === subscribedChannels.length) {
-    // Make sure playlistVideos are available
-    if (playlistVideos.length > 0) {
-      // Select the first video in the playlist
-      setSelectedVideo(playlistVideos[0]);
+    // Check if the selectedTab corresponds to the playlist tab
+    if (selectedTab === subscribedChannels.length) {
+      // Make sure playlistVideos are available
+      if (playlistVideos.length > 0) {
+        // Select the first video in the playlist
+        setSelectedVideo(playlistVideos[0]);
+      }
     }
-  }
-}, [selectedTab, playlistVideos]); // Trigger when selectedTab or playlistVideos change
-
+  }, [selectedTab, playlistVideos]); // Trigger when selectedTab or playlistVideos change
 
   useEffect(() => {
     if (videoRef.current) {
@@ -524,10 +538,31 @@ function ChannelPage() {
     else if (podcasts?.length) video = podcasts[0];
 
     if (video) setSelectedVideo(video);
-  }, [location.state,data, podcasts]);
+  }, [location.state, data, podcasts]);
 
+  useEffect(() => {
+  const el = descRef.current;
+  if (!el) return;
 
-  
+  const measure = () => {
+    if (!showFullDescription) {
+      // Measure in collapsed state
+      setIsOverflowing(el.scrollHeight > el.clientHeight);
+    } else {
+      // Temporarily collapse to check if we need "See More"
+      const prevMax = el.style.maxHeight;
+      const prevOverflow = el.style.overflow;
+      el.style.maxHeight = '7.5rem';
+      el.style.overflow = 'hidden';
+      setIsOverflowing(el.scrollHeight > el.clientHeight);
+      el.style.maxHeight = prevMax;
+      el.style.overflow = prevOverflow;
+    }
+  };
+
+  requestAnimationFrame(measure);
+}, [selectedVideo?.id, selectedVideo?.description, showFullDescription]);
+
 
   const getShortenedText = (text = '', wordLimit) => {
     const words = text.split(' ');
@@ -717,13 +752,13 @@ function ChannelPage() {
 
     const handleBackToSubcategories = () => {
       setSelectedSubcategory(null);
-       setCarouselPositions({}); // Reset to show all subcategories
+      setCarouselPositions({}); // Reset to show all subcategories
     };
 
     const currentSubcategory = selectedSubcategory || subcategoryList[0];
 
     return (
-      <div className='flex h-[225px] py-2 md:h-[240px] xl:h-[288px] 2xl:h-[306px]'>
+      <div className='flex h-[225px] py-2 md:h-[240px] xl:h-[288px] 2xl:h-[356px]'>
         {selectedSubcategory && (
           <div
             className='ml-2 mt-0 hidden h-[190px] w-[320px] flex-col md:absolute md:ml-8 md:block md:w-[240px] xl:mt-5 xl:w-[300px] 2xl:ml-10 2xl:mt-4 2xl:h-[220px] 2xl:w-[350px]'
@@ -735,13 +770,16 @@ function ChannelPage() {
                 alt={currentSubcategory}
                 className='h-[140px] w-full md:h-[145px] xl:h-[180px] 2xl:h-[210px]'
               />
-            <div className="text-center text-lg text-white md:mt-3">
-  {currentSubcategory} ({subcategories[currentSubcategory].videos.length}{" "}
-  {subcategories[currentSubcategory].videos.length === 1 ? "Episode" : "Episodes"})
-</div>
-
+              <div className='text-center text-lg text-white md:mt-3'>
+                {currentSubcategory} (
+                {subcategories[currentSubcategory].videos.length}{' '}
+                {subcategories[currentSubcategory].videos.length === 1
+                  ? 'Episode'
+                  : 'Episodes'}
+                )
+              </div>
             </div>
-            
+
             {/* <div className='text-center text-lg text-white md:mt-3'>
               {currentSubcategory}
             </div> */}
@@ -754,7 +792,6 @@ function ChannelPage() {
               ? 'md:w-[1150px] xl:w-[1380px] 2xl:w-[1750px]'
               : 'w-[340px] md:w-[1150px] xl:w-[1380px] 2xl:w-[1750px]'
           }`}
-          
         >
           {selectedSubcategory ? (
             // Show all videos under the selected subcategory
@@ -770,7 +807,7 @@ function ChannelPage() {
                   className='mb-[-15px] w-[35px] xl:mb-[-20px] xl:w-[40px] 2xl:mb-[-15px] 2xl:w-[50px]'
                 />
               </button>
-              
+
               <Slider
                 className='mt-[-25px] w-[260px] md:mt-0 md:w-full xl:w-[950px] 2xl:w-[1180px]'
                 {...{
@@ -812,11 +849,13 @@ function ChannelPage() {
                       isSelected={subcategory === selectedSubcategory}
                       hideEpisodeText={true}
                     />
-                <div className="mt-[-40px] text-center text-white">
-  {subcategory} ({subcategoryData.videos.length}{" "}
-  {subcategoryData.videos.length === 1 ? "Episode" : "Episodes"})
-</div>
-
+                    <div className='mt-[-40px] text-center text-white'>
+                      {subcategory} ({subcategoryData.videos.length}{' '}
+                      {subcategoryData.videos.length === 1
+                        ? 'Episode'
+                        : 'Episodes'}
+                      )
+                    </div>
                   </div>
                 )
               )}
@@ -851,7 +890,7 @@ function ChannelPage() {
     }
 
     return (
-      <div className='flex h-[225px]  md:h-[230px] xl:mt-2 xl:h-[265px] 2xl:mt-4 2xl:h-[290px]'>
+      <div className='flex h-[225px]  md:h-[230px] xl:mt-2 xl:h-[290px] 2xl:mt-4 2xl:h-[320px]'>
         <div className='absolute w-[340px] px-10 md:w-full md:px-[40px] xl:px-[50px]    2xl:px-[80px]  '>
           <Slider {...settings}>
             {bookmarkedVideos.map((video, index) => (
@@ -1117,29 +1156,31 @@ function ChannelPage() {
                   </h1>
                 </div>
                 <div className='px-4 leading-4 md:px-[44px]  md:leading-5 lg:leading-6 xl:pl-[142px] 2xl:pl-[88px]'>
-                  <div className='text-[12px] tracking-widest text-gray-900 md:text-[1p4x] lg:text-[18px]'>
-                    <span className='font-semibold'>Description:</span>
-                    <div
-                      className='channel-description tracking-widest text-gray-900'
-                      style={{ color: 'inherit' }}
-                      dangerouslySetInnerHTML={{
-                        __html: renderDescription().replace(
-                          /<a /g,
-                          '<a style="color:#2a78d4; text-decoration:underline;" '
-                        ),
-                      }}
-                    />
-                    {selectedVideo?.title.split('').length > 50 && (
-                      <button
-                        onClick={() =>
-                          setShowFullDescription(!showFullDescription)
-                        }
-                        className=' tracking-wider text-blue-500'
-                      >
-                        {showFullDescription ? 'See Less' : 'See More'}
-                      </button>
-                    )}
-                  </div>
+                 <div className='text-[12px] tracking-widest text-gray-900 md:text-[14px] lg:text-[18px]'>
+  <span className='font-semibold'>Description:</span>
+
+  <div
+    ref={descRef}
+    className='channel-description tracking-widest text-gray-900 overflow-hidden transition-all'
+    style={ showFullDescription ? {} : { maxHeight: '7.5rem' } }  // ~6–8 lines collapsed
+    dangerouslySetInnerHTML={{
+      __html: (selectedVideo?.description || '').replace(
+        /<a /g,
+        '<a style="color:#2a78d4; text-decoration:underline;" '
+      ),
+    }}
+  />
+
+  {isOverflowing && (
+    <button
+      onClick={() => setShowFullDescription(s => !s)}
+      className='tracking-wider text-blue-500'
+    >
+      {showFullDescription ? 'See Less' : 'See More'}
+    </button>
+  )}
+</div>
+
                   {/* <div className="mt-1 text-[12px] text-blue-500 md:text-[18px] tracking-widest">
                     <button
                       className="mb-2"

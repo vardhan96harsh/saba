@@ -17,6 +17,15 @@ import TruncatedText from '../TruncatedText';
 import useImportCommentData from '../hooks/useImportCommentData';
 import useImportRatingData from '../hooks/useImportRatingData';
 
+
+// --- helpers ---
+const normalizeChannelName = (c) =>
+  (typeof c === 'string' ? c : c?.name || '').trim().toLowerCase();
+
+const normalizeText = (t) =>
+  (t ?? '').toString().trim().toLowerCase();
+
+
 const ListComponent = ({ label, value, optionKey, options, propertyName, onChange, disabled, required }) => {
 
     const handleChange = (e) => {
@@ -179,14 +188,24 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         }
     };
 
-    const validateUniqueTitleAndEpisode = (channel, title, episode, isEdit, index) => {
-        return data.podcasts.every((p, i) => {
-            if (isEdit && i === index) {
-                return true;
-            }
-            return !(p.channel === channel && (p.title === title || p.episode === episode));
-        });
-    };
+    
+  const validateUniqueTitleAndEpisode = (channel, title, episode, isEdit, index) => {
+  const targetChannel = normalizeChannelName(channel);
+  const nTitle = normalizeText(title);
+  const nEpisode = normalizeText(episode);
+
+  return data.podcasts.every((p, i) => {
+    if (isEdit && i === index) return true; // skip the row being edited
+
+    // compare inside the same channel, regardless of string/object shape
+    if (normalizeChannelName(p.channel) !== targetChannel) return true;
+
+    const titleClash   = nTitle && normalizeText(p.title) === nTitle;
+    const episodeClash = nEpisode && normalizeText(p.episode) === nEpisode;
+
+    return !(titleClash || episodeClash);
+  });
+};
 
     
 
@@ -239,11 +258,16 @@ const Edit = ({ podcast, index, isEdit, handleCancel, channels, setData, data, h
         const dataCopy = { ...data, podcasts: [...data.podcasts] };
 
         // const dataCopy = JSON.parse(JSON.stringify(data));
-        if (isEdit) {
-            dataCopy.podcasts[index] = currentPodcast;
-        } else {
-            dataCopy.podcasts.unshift(currentPodcast);
-        }
+     if (isEdit) {
+  if (index === -1) {
+    alert('Could not locate the podcast to update. Try reopening the edit.');
+    return;
+  }
+  dataCopy.podcasts[index] = currentPodcast;
+} else {
+  dataCopy.podcasts.unshift(currentPodcast);
+}
+
         setIsSaved(true);
         setData(dataCopy);
         handleCancel();
@@ -626,15 +650,23 @@ const EditPodcastComponent = () => {
     //     setToggle(true);
     //     setIndex(index);
     // };
-    const handleEdit = (filteredIndex) => {
-    const podcastToEdit = filteredPodcasts[filteredIndex];
-    const globalIndex = data.podcasts.findIndex(p => p.id === podcastToEdit.id);
-    scrollPositionRef.current = tableRef.current?.scrollTop || 0;
-    setPodcast(podcastToEdit);
-    setIsEdit(true);
-    setToggle(true);
-    setIndex(globalIndex); // ✅ this is the key change
+const handleEdit = (filteredIndex) => {
+  const podcastToEdit = filteredPodcasts[filteredIndex];
+
+  // find the exact element in master list by id + channel + episode
+  const globalIndex = data.podcasts.findIndex(p =>
+    normalizeText(p.id) === normalizeText(podcastToEdit.id) &&
+    normalizeChannelName(p.channel) === normalizeChannelName(podcastToEdit.channel) &&
+    normalizeText(p.episode) === normalizeText(podcastToEdit.episode)
+  );
+
+  scrollPositionRef.current = tableRef.current?.scrollTop || 0;
+  setPodcast(podcastToEdit);
+  setIsEdit(true);
+  setToggle(true);
+  setIndex(globalIndex);
 };
+
 
 
     const handleAddNew = () => {
@@ -759,7 +791,7 @@ const EditPodcastComponent = () => {
             setFilteredPodcasts(sorted);
         } else {
             const filtered = data.podcasts.filter(
-                (podcast) => podcast.channel === value
+              (podcast) => normalizeChannelName(podcast.channel) === normalizeChannelName(value)
             );
             setFilteredPodcasts(filtered);
         }

@@ -129,9 +129,9 @@ const Home = () => {
     subcategory: podcast.subcategories  // Default subcategory
   }));
 
-  console.log('Playlists Data:', playlists); // Debugging to verify subcategory names
+  // console.log('Playlists Data:', playlists); 
 
-  console.log('Playlists:', playlists);
+  // console.log('Playlists:', playlists);
 
 
   const getQueryParams = () => {
