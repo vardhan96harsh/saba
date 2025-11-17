@@ -68,10 +68,10 @@ export const useApiContext = () => {
 export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
   const { workspaceUrls, userId, apiCertificate, userName } =
     useGetWorkspaceInfo();
-  const { isOwner, isLoadingOwner } = { isOwner: true, isLoadingOwner: false }//useIsOwner();
-  const { isPartner, isLoadingPartner } = { isPartner: true, isLoadingPartner: false }  //useIsPartner();
-  // const { isOwner, isLoadingOwner } = useIsOwner();
-  // const { isPartner, isLoadingPartner } = useIsPartner();
+  // const { isOwner, isLoadingOwner } = { isOwner: true, isLoadingOwner: false }//useIsOwner();
+  // const { isPartner, isLoadingPartner } = { isPartner: true, isLoadingPartner: false }  //useIsPartner();
+  const { isOwner, isLoadingOwner } = useIsOwner();
+  const { isPartner, isLoadingPartner } = useIsPartner();
   const {
     workspaceData,
     dataFileId,

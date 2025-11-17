@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react';
+import React, { Fragment, useEffect, useState, useRef, useMemo } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
 import { MdPlayCircle } from 'react-icons/md';
 import Slider from 'react-slick';
@@ -170,8 +170,8 @@ function ChannelPage() {
   const [showFullTags, setShowFullTags] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-const descRef = useRef(null);
-const [isOverflowing, setIsOverflowing] = useState(false);
+  const descRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPodcasts, setFilteredPodcasts] = useState(podcasts);
@@ -541,28 +541,27 @@ const [isOverflowing, setIsOverflowing] = useState(false);
   }, [location.state, data, podcasts]);
 
   useEffect(() => {
-  const el = descRef.current;
-  if (!el) return;
+    const el = descRef.current;
+    if (!el) return;
 
-  const measure = () => {
-    if (!showFullDescription) {
-      // Measure in collapsed state
-      setIsOverflowing(el.scrollHeight > el.clientHeight);
-    } else {
-      // Temporarily collapse to check if we need "See More"
-      const prevMax = el.style.maxHeight;
-      const prevOverflow = el.style.overflow;
-      el.style.maxHeight = '7.5rem';
-      el.style.overflow = 'hidden';
-      setIsOverflowing(el.scrollHeight > el.clientHeight);
-      el.style.maxHeight = prevMax;
-      el.style.overflow = prevOverflow;
-    }
-  };
+    const measure = () => {
+      if (!showFullDescription) {
+        // Measure in collapsed state
+        setIsOverflowing(el.scrollHeight > el.clientHeight);
+      } else {
+        // Temporarily collapse to check if we need "See More"
+        const prevMax = el.style.maxHeight;
+        const prevOverflow = el.style.overflow;
+        el.style.maxHeight = '7.5rem';
+        el.style.overflow = 'hidden';
+        setIsOverflowing(el.scrollHeight > el.clientHeight);
+        el.style.maxHeight = prevMax;
+        el.style.overflow = prevOverflow;
+      }
+    };
 
-  requestAnimationFrame(measure);
-}, [selectedVideo?.id, selectedVideo?.description, showFullDescription]);
-
+    requestAnimationFrame(measure);
+  }, [selectedVideo?.id, selectedVideo?.description, showFullDescription]);
 
   const getShortenedText = (text = '', wordLimit) => {
     const words = text.split(' ');
@@ -917,6 +916,43 @@ const [isOverflowing, setIsOverflowing] = useState(false);
     }).length;
   };
 
+  // at top (if not present):
+  // import React, { ..., useMemo } from 'react';
+
+  // --- SUBSCRIBER COUNT (add this block) ---
+  const channelIdForCount = useMemo(() => {
+    // 1) prefer id from navigation state
+    if (channel_data?.id !== undefined && channel_data?.id !== null) {
+      return String(channel_data.id);
+    }
+    // 2) try mapping selectedVideo.channel (name) -> channel id
+    const byName = data?.channels?.find(
+      (c) => c.name === selectedVideo?.channel
+    )?.id;
+    if (byName !== undefined && byName !== null) {
+      return String(byName);
+    }
+    // 3) fallback: selectedVideo.channel_id
+    if (
+      selectedVideo?.channel_id !== undefined &&
+      selectedVideo?.channel_id !== null
+    ) {
+      return String(selectedVideo.channel_id);
+    }
+    return ''; // safe fallback
+  }, [
+    channel_data?.id,
+    selectedVideo?.channel,
+    selectedVideo?.channel_id,
+    data?.channels,
+  ]);
+
+  const subscriberCount =
+    channelIdForCount && subData?.[channelIdForCount]
+      ? subData[channelIdForCount].length
+      : 0;
+  // --- /SUBSCRIBER COUNT ---
+
   return (
     <div className='h-screen   overflow-hidden overflow-y-auto bg-gray-100 font-sans antialiased'>
       <div className='mx-auto  '>
@@ -1140,10 +1176,16 @@ const [isOverflowing, setIsOverflowing] = useState(false);
             <section className=' md:flex '>
               <div className='bg-[#D4FCFF] md:w-[75%]'>
                 <div className='mb-3 w-full bg-[#549ef7] px-3 py-2 text-[14px] md:flex md:h-10  md:justify-between md:px-[43px] md:pr-1 md:text-[18px] lg:pr-10 xl:px-[141px] 2xl:px-[90px]'>
-                  <h1 className='flex gap-2 tracking-widest text-black md:text-sm md:leading-normal lg:text-lg'>
-                    <MdOutlineDesktopWindows className='size-6 md:size-6' />
-                    Channel Name: {selectedVideo.channel}
-                  </h1>
+                <h1 className="flex items-center gap-2 tracking-widest text-black md:text-sm md:leading-normal lg:text-lg">
+  <MdOutlineDesktopWindows className="size-6" />
+  <span>Channel Name: {selectedVideo.channel}</span>
+  <span className="px-3 text-xs font-medium text-gray-900 md:text-sm mt-1">
+    Subscribers:
+    <span className="ml-1 font-semibold">{subscriberCount}</span>
+  </span>
+</h1>
+
+                  
                   <h1>
                     <span className='flex gap-2 tracking-widest text-gray-900 md:text-sm lg:text-lg'>
                       <MdCalendarMonth className='size-6' /> Publish Date:{' '}
@@ -1156,30 +1198,30 @@ const [isOverflowing, setIsOverflowing] = useState(false);
                   </h1>
                 </div>
                 <div className='px-4 leading-4 md:px-[44px]  md:leading-5 lg:leading-6 xl:pl-[142px] 2xl:pl-[88px]'>
-                 <div className='text-[12px] tracking-widest text-gray-900 md:text-[14px] lg:text-[18px]'>
-  <span className='font-semibold'>Description:</span>
+                  <div className='text-[12px] tracking-widest text-gray-900 md:text-[14px] lg:text-[18px]'>
+                    <span className='font-semibold'>Description:</span>
 
-  <div
-    ref={descRef}
-    className='channel-description tracking-widest text-gray-900 overflow-hidden transition-all'
-    style={ showFullDescription ? {} : { maxHeight: '7.5rem' } }  // ~6–8 lines collapsed
-    dangerouslySetInnerHTML={{
-      __html: (selectedVideo?.description || '').replace(
-        /<a /g,
-        '<a style="color:#2a78d4; text-decoration:underline;" '
-      ),
-    }}
-  />
+                    <div
+                      ref={descRef}
+                      className='channel-description overflow-hidden tracking-widest text-gray-900 transition-all'
+                      style={showFullDescription ? {} : { maxHeight: '7.5rem' }} // ~6–8 lines collapsed
+                      dangerouslySetInnerHTML={{
+                        __html: (selectedVideo?.description || '').replace(
+                          /<a /g,
+                          '<a style="color:#2a78d4; text-decoration:underline;" '
+                        ),
+                      }}
+                    />
 
-  {isOverflowing && (
-    <button
-      onClick={() => setShowFullDescription(s => !s)}
-      className='tracking-wider text-blue-500'
-    >
-      {showFullDescription ? 'See Less' : 'See More'}
-    </button>
-  )}
-</div>
+                    {isOverflowing && (
+                      <button
+                        onClick={() => setShowFullDescription((s) => !s)}
+                        className='tracking-wider text-blue-500'
+                      >
+                        {showFullDescription ? 'See Less' : 'See More'}
+                      </button>
+                    )}
+                  </div>
 
                   {/* <div className="mt-1 text-[12px] text-blue-500 md:text-[18px] tracking-widest">
                     <button
