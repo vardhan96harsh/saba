@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { VideoCard } from "../components/videoCard";
-import { Channel } from '@/types/types';
+// import { Channel } from '@/types/types';
 import { useLocation, useNavigate } from 'react-router-dom';
 //import HeaderHP from '@/components/HeaderHP';
 import HomeHeader from '@/components/HomeHeader';
@@ -94,17 +94,66 @@ const Home = () => {
 
   const { mutateAsync } = useImportSubData();
 
-  const addSub = (channel_id: string) => {
-    subData[channel_id] = [...(subData[channel_id] ?? []), userId];
-    setSubData({ ...subData });
-    mutateAsync();
+ const addSub = async (channel_id: string) => {
+  console.log("➕ addSub BEFORE:", {
+    channel_id,
+    userId,
+    existingSubscribers: subData[channel_id],
+  });
+
+  // create a new object instead of mutating directly (safer, but same behavior)
+  const updatedChannelSubs = [...(subData[channel_id] ?? []), userId];
+  const updatedSubData = {
+    ...subData,
+    [channel_id]: updatedChannelSubs,
   };
 
-  const removeSub = (channel_id: string) => {
-    subData[channel_id] = (subData[channel_id] ?? []).filter(a => a !== userId);
-    setSubData({ ...subData });
-    mutateAsync();
+  console.log("➕ addSub AFTER local update:", {
+    updatedSubscribers: updatedChannelSubs,
+  });
+
+  setSubData(updatedSubData);
+  console.log("➕ setSubData called (add)");
+
+  try {
+    await mutateAsync();
+    console.log("✅ addSub saved on server");
+  } catch (err) {
+    console.error("❌ addSub server SAVE FAILED:", err);
+    // If you ever want to revert UI on failure, you can do it here.
+  }
+};
+
+const removeSub = async (channel_id: string) => {
+  console.log("➖ removeSub BEFORE:", {
+    channel_id,
+    userId,
+    existingSubscribers: subData[channel_id],
+  });
+
+  const updatedChannelSubs = (subData[channel_id] ?? []).filter(
+    (a) => a !== userId
+  );
+  const updatedSubData = {
+    ...subData,
+    [channel_id]: updatedChannelSubs,
   };
+
+  console.log("➖ removeSub AFTER local update:", {
+    updatedSubscribers: updatedChannelSubs,
+  });
+
+  setSubData(updatedSubData);
+  console.log("➖ setSubData called (remove)");
+
+  try {
+    await mutateAsync();
+    console.log("✅ removeSub saved on server");
+  } catch (err) {
+    console.error("❌ removeSub server SAVE FAILED:", err);
+  }
+};
+
 
 
   // Handle sliding to next and previous set of channels
@@ -134,17 +183,17 @@ const Home = () => {
   // console.log('Playlists:', playlists);
 
 
-  const getQueryParams = () => {
-    const params = new URLSearchParams(window.location.href);
-    return {
-      videoId: params.get("videoId"),
-      title: params.get("title") ? decodeURIComponent(params.get("title")) : "",
-      channelId: params.get("channelId"),
-      channelName: params.get("channelName") ? decodeURIComponent(params.get("channelName")) : "",
-      videoUrl: params.get("videoUrl") ? decodeURIComponent(decodeURIComponent(params.get("videoUrl"))) : "",
-      publishDate: params.get("publishDate"),
-    };
-  };
+  // const getQueryParams = () => {
+  //   const params = new URLSearchParams(window.location.href);
+  //   return {
+  //     videoId: params.get("videoId"),
+  //     title: params.get("title") ? decodeURIComponent(params.get("title")) : "",
+  //     channelId: params.get("channelId"),
+  //     channelName: params.get("channelName") ? decodeURIComponent(params.get("channelName")) : "",
+  //     videoUrl: params.get("videoUrl") ? decodeURIComponent(decodeURIComponent(params.get("videoUrl"))) : "",
+  //     publishDate: params.get("publishDate"),
+  //   };
+  // };
   
 
 
